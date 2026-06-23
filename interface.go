@@ -24,10 +24,7 @@ type unknownVtbl struct {
 /*** IUnknown methods ***/
 func (this *Unknown) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.QueryInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(ppvObject)),
 	)
@@ -35,22 +32,16 @@ func (this *Unknown) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	return err
 }
 func (this *Unknown) AddRef() uint32 {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.AddRef,
-		1,
 		uintptr(unsafe.Pointer(this)),
-		0,
-		0,
 	)
 	return uint32(ret)
 }
 func (this *Unknown) Release() uint32 {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.Release,
-		1,
 		uintptr(unsafe.Pointer(this)),
-		0,
-		0,
 	)
 	return uint32(ret)
 }

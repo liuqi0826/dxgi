@@ -12,7 +12,6 @@ func init() {
 }
 
 type DXGISwapChainMedia struct {
-	Unknown
 	lpVtbl *swapChainMediaVtbl
 }
 
@@ -35,10 +34,7 @@ type swapChainMediaVtbl struct {
 /*** IDXGIObject methods ***/
 func (this *DXGISwapChainMedia) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.QueryInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(ppvObject)),
 	)
@@ -46,20 +42,14 @@ func (this *DXGISwapChainMedia) QueryInterface(riid *GUID, ppvObject *interface{
 	return err
 }
 func (this *DXGISwapChainMedia) AddRef() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.AddRef,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.AddRef, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
 	return uint32(ret)
 }
 func (this *DXGISwapChainMedia) Release() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.Release,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Release, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -69,10 +59,7 @@ func (this *DXGISwapChainMedia) Release() uint32 {
 /*** IDXGIObject methods ***/
 func (this *DXGISwapChainMedia) SetPrivateData(Name *GUID, DataSize uint32, pData *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(DataSize),
 		uintptr(unsafe.Pointer(pData)),
@@ -84,10 +71,7 @@ func (this *DXGISwapChainMedia) SetPrivateData(Name *GUID, DataSize uint32, pDat
 }
 func (this *DXGISwapChainMedia) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetPrivateDataInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateDataInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pUnknown)),
 	)
@@ -97,10 +81,7 @@ func (this *DXGISwapChainMedia) SetPrivateDataInterface(Name *GUID, pUnknown *IU
 func (this *DXGISwapChainMedia) GetPrivateData(Name *GUID, pDataSize *uint32) (*interface{}, error) {
 	var err error
 	var pData *interface{}
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.GetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pDataSize)),
 		uintptr(unsafe.Pointer(pData)),
@@ -113,10 +94,7 @@ func (this *DXGISwapChainMedia) GetPrivateData(Name *GUID, pDataSize *uint32) (*
 func (this *DXGISwapChainMedia) GetParent(riid *GUID) (*interface{}, error) {
 	var err error
 	var ppParent *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetParent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetParent, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppParent)),
 	)
@@ -127,23 +105,20 @@ func (this *DXGISwapChainMedia) GetParent(riid *GUID) (*interface{}, error) {
 /*** IDXGISwapChainMedia methods ***/
 func (this *DXGISwapChainMedia) GetFrameStatisticsMedia() (*DXGI_FRAME_STATISTICS_MEDIA, error) {
 	var err error
-	var pStats *DXGI_FRAME_STATISTICS_MEDIA
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetFrameStatisticsMedia,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pStats)),
+	var stats DXGI_FRAME_STATISTICS_MEDIA
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetFrameStatisticsMedia, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&stats)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pStats, err
+	if err != nil {
+		return nil, err
+	}
+	return &stats, nil
 }
 func (this *DXGISwapChainMedia) SetPresentDuration(Duration uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetPresentDuration,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPresentDuration, uintptr(unsafe.Pointer(this)),
 		uintptr(Duration),
 		0,
 	)
@@ -153,10 +128,7 @@ func (this *DXGISwapChainMedia) SetPresentDuration(Duration uint32) error {
 func (this *DXGISwapChainMedia) CheckPresentDurationSupport(DesiredPresentDuration uint32) (*uint32, *uint32, error) {
 	var err error
 	var pClosestSmallerPresentDuration, pClosestLargerPresentDuration *uint32
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.CheckPresentDurationSupport,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CheckPresentDurationSupport, uintptr(unsafe.Pointer(this)),
 		uintptr(DesiredPresentDuration),
 		uintptr(unsafe.Pointer(pClosestSmallerPresentDuration)),
 		uintptr(unsafe.Pointer(pClosestLargerPresentDuration)),

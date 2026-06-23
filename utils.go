@@ -113,6 +113,9 @@ func GetError(hresult uint32) error {
 		err := errors.New("DXGI_ERROR_SDK_COMPONENT_MISSING")
 		return err
 	}
+	if (hresult & 0x80000000) != 0 {
+		return fmt.Errorf("HRESULT 0x%08x", hresult)
+	}
 	return nil
 }
 

@@ -20,7 +20,6 @@ func init() {
 }
 
 type DXGIDevice struct {
-	Unknown
 	lpVtbl *deviceVtbl
 }
 
@@ -57,10 +56,7 @@ type deviceVtbl struct {
 /*** IDXGIObject methods ***/
 func (this *DXGIDevice) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.QueryInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(ppvObject)),
 	)
@@ -68,20 +64,14 @@ func (this *DXGIDevice) QueryInterface(riid *GUID, ppvObject *interface{}) error
 	return err
 }
 func (this *DXGIDevice) AddRef() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.AddRef,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.AddRef, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
 	return uint32(ret)
 }
 func (this *DXGIDevice) Release() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.Release,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Release, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -91,10 +81,7 @@ func (this *DXGIDevice) Release() uint32 {
 /*** IDXGIObject methods ***/
 func (this *DXGIDevice) SetPrivateData(Name *GUID, DataSize uint32, pData *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(DataSize),
 		uintptr(unsafe.Pointer(pData)),
@@ -106,10 +93,7 @@ func (this *DXGIDevice) SetPrivateData(Name *GUID, DataSize uint32, pData *inter
 }
 func (this *DXGIDevice) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetPrivateDataInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateDataInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pUnknown)),
 	)
@@ -119,10 +103,7 @@ func (this *DXGIDevice) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) 
 func (this *DXGIDevice) GetPrivateData(Name *GUID, pDataSize *uint32) (*interface{}, error) {
 	var err error
 	var pData *interface{}
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.GetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pDataSize)),
 		uintptr(unsafe.Pointer(pData)),
@@ -135,10 +116,7 @@ func (this *DXGIDevice) GetPrivateData(Name *GUID, pDataSize *uint32) (*interfac
 func (this *DXGIDevice) GetParent(riid *GUID) (*interface{}, error) {
 	var err error
 	var ppParent *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetParent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetParent, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppParent)),
 	)
@@ -149,24 +127,21 @@ func (this *DXGIDevice) GetParent(riid *GUID) (*interface{}, error) {
 /*** IDXGIDevice methods ***/
 func (this *DXGIDevice) GetAdapter() (*DXGIAdapter, error) {
 	var err error
-	var pAdapter *DXGIAdapter
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetAdapter,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pAdapter)),
+	var ppAdapter *DXGIAdapter
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetAdapter, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&ppAdapter)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pAdapter, err
+	if err != nil {
+		return nil, err
+	}
+	return ppAdapter, nil
 }
 func (this *DXGIDevice) CreateSurface(pDesc *DXGISharedResource, NumSurfaces uint32, Usage DXGIUsage, pSharedResource *DXGISharedResource) (*DXGISurface, error) {
 	var err error
 	var ppSurface *DXGISurface
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.CreateSurface,
-		6,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CreateSurface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pDesc)),
 		uintptr(NumSurfaces),
 		uintptr(Usage),
@@ -180,10 +155,7 @@ func (this *DXGIDevice) QueryResourceResidency(ppResources *Unknown) (*uint32, u
 	var err error
 	var pResidencyStatus *uint32
 	var NumResources uint32
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.QueryResourceResidency,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryResourceResidency, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(&ppResources)),
 		uintptr(unsafe.Pointer(pResidencyStatus)),
 		uintptr(NumResources),
@@ -195,64 +167,55 @@ func (this *DXGIDevice) QueryResourceResidency(ppResources *Unknown) (*uint32, u
 }
 func (this *DXGIDevice) SetGPUThreadPriority(Priority uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetGPUThreadPriority,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetGPUThreadPriority, uintptr(unsafe.Pointer(this)),
 		uintptr(Priority),
 		0,
 	)
 	err = GetError(uint32(ret))
 	return err
 }
-func (this *DXGIDevice) GetGPUThreadPriority() (*uint32, error) {
+func (this *DXGIDevice) GetGPUThreadPriority() (int32, error) {
 	var err error
-	var pPriority *uint32
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetGPUThreadPriority,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pPriority)),
+	var priority int32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetGPUThreadPriority, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&priority)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pPriority, err
+	if err != nil {
+		return 0, err
+	}
+	return priority, nil
 }
 
 /*** IDXGIDevice1 methods ***/
 func (this *DXGIDevice) SetMaximumFrameLatency(MaxLatency uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetMaximumFrameLatency,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetMaximumFrameLatency, uintptr(unsafe.Pointer(this)),
 		uintptr(MaxLatency),
 		0,
 	)
 	err = GetError(uint32(ret))
 	return err
 }
-func (this *DXGIDevice) GetMaximumFrameLatency() (*uint32, error) {
+func (this *DXGIDevice) GetMaximumFrameLatency() (uint32, error) {
 	var err error
-	var pMaxLatency *uint32
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetMaximumFrameLatency,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pMaxLatency)),
+	var maxLatency uint32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetMaximumFrameLatency, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&maxLatency)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pMaxLatency, err
+	if err != nil {
+		return 0, err
+	}
+	return maxLatency, nil
 }
 
 /*** IDXGIDevice2 methods ***/
 func (this *DXGIDevice) EnqueueSetEvent(hEvent HANDLE) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.EnqueueSetEvent,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.EnqueueSetEvent, uintptr(unsafe.Pointer(this)),
 		uintptr(hEvent),
 		0,
 	)
@@ -261,10 +224,7 @@ func (this *DXGIDevice) EnqueueSetEvent(hEvent HANDLE) error {
 }
 func (this *DXGIDevice) OfferResources(NumResources uint32, ppResources *DXGIResource, Priority uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.OfferResources,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.OfferResources, uintptr(unsafe.Pointer(this)),
 		uintptr(NumResources),
 		uintptr(unsafe.Pointer(&ppResources)),
 		uintptr(Priority),
@@ -276,10 +236,7 @@ func (this *DXGIDevice) OfferResources(NumResources uint32, ppResources *DXGIRes
 }
 func (this *DXGIDevice) ReclaimResources(NumResources uint32, ppResources *DXGIResource, pDiscarded *bool) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.ReclaimResources,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.ReclaimResources, uintptr(unsafe.Pointer(this)),
 		uintptr(NumResources),
 		uintptr(unsafe.Pointer(&ppResources)),
 		uintptr(unsafe.Pointer(pDiscarded)),
@@ -293,10 +250,7 @@ func (this *DXGIDevice) ReclaimResources(NumResources uint32, ppResources *DXGIR
 /*** IDXGIDevice3 methods ***/
 func (this *DXGIDevice) Trim() error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.Trim,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Trim, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -307,10 +261,7 @@ func (this *DXGIDevice) Trim() error {
 /*** IDXGIDevice4 methods ***/
 func (this *DXGIDevice) OfferResources1(NumResources uint32, ppResources *DXGIResource, Priority uint32, Flags uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.OfferResources1,
-		5,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.OfferResources1, uintptr(unsafe.Pointer(this)),
 		uintptr(NumResources),
 		uintptr(unsafe.Pointer(&ppResources)),
 		uintptr(Priority),
@@ -322,10 +273,7 @@ func (this *DXGIDevice) OfferResources1(NumResources uint32, ppResources *DXGIRe
 }
 func (this *DXGIDevice) ReclaimResources1(NumResources uint32, ppResources *DXGIResource, pResults *uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.ReclaimResources1,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.ReclaimResources1, uintptr(unsafe.Pointer(this)),
 		uintptr(NumResources),
 		uintptr(unsafe.Pointer(&ppResources)),
 		uintptr(unsafe.Pointer(pResults)),

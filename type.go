@@ -45,7 +45,7 @@ type (
 	ULONG_PTR       = uintptr
 	WPARAM          = uintptr
 	HRAWINPUT       = HANDLE
-	SIZE_T          = uint32
+	SIZE_T          = uint64
 )
 
 //++++++++++++++++++++  ++++++++++++++++++++
@@ -59,14 +59,14 @@ type LARGE_INTEGER struct {
 	HighPart int32
 }
 type RECT struct {
-	Left   int64
-	Top    int64
-	Right  int64
-	Bottom int64
+	Left   int32
+	Top    int32
+	Right  int32
+	Bottom int32
 }
 type POINT struct {
-	X int64
-	Y int64
+	X int32
+	Y int32
 }
 
 //++++++++++++++++++++  ++++++++++++++++++++

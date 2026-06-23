@@ -12,7 +12,6 @@ func init() {
 }
 
 type DXGIDecodeSwapChain struct {
-	Unknown
 	lpVtbl *decodeSwapChainVtbl
 }
 
@@ -26,12 +25,6 @@ type decodeSwapChainVtbl struct {
 	SetPrivateDataInterface uintptr
 	GetPrivateData          uintptr
 	GetParent               uintptr
-	/*** IDXGIDevice methods ***/
-	GetAdapter             uintptr
-	CreateSurface          uintptr
-	QueryResourceResidency uintptr
-	SetGPUThreadPriority   uintptr
-	GetGPUThreadPriority   uintptr
 	/*** IDXGIDecodeSwapChain methods ***/
 	PresentBuffer uintptr
 	SetSourceRect uintptr
@@ -47,10 +40,7 @@ type decodeSwapChainVtbl struct {
 /*** IDXGIObject methods ***/
 func (this *DXGIDecodeSwapChain) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.QueryInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(ppvObject)),
 	)
@@ -58,20 +48,14 @@ func (this *DXGIDecodeSwapChain) QueryInterface(riid *GUID, ppvObject *interface
 	return err
 }
 func (this *DXGIDecodeSwapChain) AddRef() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.AddRef,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.AddRef, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
 	return uint32(ret)
 }
 func (this *DXGIDecodeSwapChain) Release() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.Release,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Release, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -81,10 +65,7 @@ func (this *DXGIDecodeSwapChain) Release() uint32 {
 /*** IDXGIObject methods ***/
 func (this *DXGIDecodeSwapChain) SetPrivateData(Name *GUID, DataSize uint32, pData *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(DataSize),
 		uintptr(unsafe.Pointer(pData)),
@@ -96,10 +77,7 @@ func (this *DXGIDecodeSwapChain) SetPrivateData(Name *GUID, DataSize uint32, pDa
 }
 func (this *DXGIDecodeSwapChain) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetPrivateDataInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateDataInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pUnknown)),
 	)
@@ -109,10 +87,7 @@ func (this *DXGIDecodeSwapChain) SetPrivateDataInterface(Name *GUID, pUnknown *I
 func (this *DXGIDecodeSwapChain) GetPrivateData(Name *GUID, pDataSize *uint32) (*interface{}, error) {
 	var err error
 	var pData *interface{}
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.GetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pDataSize)),
 		uintptr(unsafe.Pointer(pData)),
@@ -125,10 +100,7 @@ func (this *DXGIDecodeSwapChain) GetPrivateData(Name *GUID, pDataSize *uint32) (
 func (this *DXGIDecodeSwapChain) GetParent(riid *GUID) (*interface{}, error) {
 	var err error
 	var ppParent *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetParent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetParent, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppParent)),
 	)
@@ -139,10 +111,7 @@ func (this *DXGIDecodeSwapChain) GetParent(riid *GUID) (*interface{}, error) {
 /*** IDXGIDecodeSwapChain methods ***/
 func (this *DXGIDecodeSwapChain) PresentBuffer(BufferToPresent, SyncInterval, Flags uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.PresentBuffer,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.PresentBuffer, uintptr(unsafe.Pointer(this)),
 		uintptr(BufferToPresent),
 		uintptr(SyncInterval),
 		uintptr(Flags),
@@ -154,10 +123,7 @@ func (this *DXGIDecodeSwapChain) PresentBuffer(BufferToPresent, SyncInterval, Fl
 }
 func (this *DXGIDecodeSwapChain) SetSourceRect(pRect *RECT) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetSourceRect,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetSourceRect, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pRect)),
 		0,
 	)
@@ -166,10 +132,7 @@ func (this *DXGIDecodeSwapChain) SetSourceRect(pRect *RECT) error {
 }
 func (this *DXGIDecodeSwapChain) SetTargetRect(pRect *RECT) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetTargetRect,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetTargetRect, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pRect)),
 		0,
 	)
@@ -178,10 +141,7 @@ func (this *DXGIDecodeSwapChain) SetTargetRect(pRect *RECT) error {
 }
 func (this *DXGIDecodeSwapChain) SetDestSize(Width, Height uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetDestSize,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetDestSize, uintptr(unsafe.Pointer(this)),
 		uintptr(Width),
 		uintptr(Height),
 	)
@@ -190,49 +150,49 @@ func (this *DXGIDecodeSwapChain) SetDestSize(Width, Height uint32) error {
 }
 func (this *DXGIDecodeSwapChain) GetSourceRect() (*RECT, error) {
 	var err error
-	var pRect *RECT
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetSourceRect,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pRect)),
+	var rect RECT
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetSourceRect, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&rect)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pRect, err
+	if err != nil {
+		return nil, err
+	}
+	return &rect, nil
 }
 func (this *DXGIDecodeSwapChain) GetTargetRect() (*RECT, error) {
 	var err error
-	var pRect *RECT
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetTargetRect,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pRect)),
+	var rect RECT
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetTargetRect, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&rect)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pRect, err
+	if err != nil {
+		return nil, err
+	}
+	return &rect, nil
 }
 func (this *DXGIDecodeSwapChain) GetDestSize() (uint32, uint32, error) {
 	var err error
-	var Width, Height uint32
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetDestSize,
-		3,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(Width),
-		uintptr(Height),
+	var width, height uint32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetDestSize, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&width)),
+		uintptr(unsafe.Pointer(&height)),
+		0,
+		0,
+		0,
 	)
 	err = GetError(uint32(ret))
-	return Width, Height, err
+	if err != nil {
+		return 0, 0, err
+	}
+	return width, height, nil
 }
 func (this *DXGIDecodeSwapChain) SetColorSpace(ColorSpace uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetColorSpace,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetColorSpace, uintptr(unsafe.Pointer(this)),
 		uintptr(ColorSpace),
 		0,
 	)
@@ -240,10 +200,7 @@ func (this *DXGIDecodeSwapChain) SetColorSpace(ColorSpace uint32) error {
 	return err
 }
 func (this *DXGIDecodeSwapChain) GetColorSpace() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetColorSpace,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetColorSpace, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)

@@ -386,9 +386,9 @@ type DXGI_MAPPED_RECTstruct struct {
 type DXGIOutputDesc struct {
 	DeviceName         [32]C.wchar_t
 	DesktopCoordinates RECT
-	AttachedToDesktop  bool
+	AttachedToDesktop  BOOL
 	Rotation           uint32
-	Monitor            unsafe.Pointer
+	Monitor            HMONITOR
 }
 type DXGISharedResource struct {
 	Handle HANDLE
@@ -504,12 +504,12 @@ type DXGI_FRAME_STATISTICS_MEDIA struct {
 	ApprovedPresentDuration uint32
 }
 type DXGI_MATRIX_3X2_F struct {
-	_11 uint32
-	_12 uint32
-	_21 uint32
-	_22 uint32
-	_31 uint32
-	_32 uint32
+	_11 float32
+	_12 float32
+	_21 float32
+	_22 float32
+	_31 float32
+	_32 float32
 }
 
 //++++++++++++++++++++ dxgi1_4.h ++++++++++++++++++++
@@ -542,7 +542,7 @@ type DXGI_ADAPTER_DESC3 struct {
 	DedicatedVideoMemory          SIZE_T
 	DedicatedSystemMemory         SIZE_T
 	SharedSystemMemory            SIZE_T
-	AdapterLuid                   *GUID
+	AdapterLuid                   LUID
 	Flags                         uint32
 	GraphicsPreemptionGranularity uint32
 	ComputePreemptionGranularity  uint32

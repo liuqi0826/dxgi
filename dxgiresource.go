@@ -14,7 +14,6 @@ func init() {
 }
 
 type DXGIResource struct {
-	Unknown
 	lpVtbl *resourceVtbl
 }
 
@@ -41,10 +40,7 @@ type resourceVtbl struct {
 /*** IDXGIObject methods ***/
 func (this *DXGIResource) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.QueryInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(ppvObject)),
 	)
@@ -52,20 +48,14 @@ func (this *DXGIResource) QueryInterface(riid *GUID, ppvObject *interface{}) err
 	return err
 }
 func (this *DXGIResource) AddRef() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.AddRef,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.AddRef, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
 	return uint32(ret)
 }
 func (this *DXGIResource) Release() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.Release,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Release, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -75,10 +65,7 @@ func (this *DXGIResource) Release() uint32 {
 /*** IDXGIObject methods ***/
 func (this *DXGIResource) SetPrivateData(Name *GUID, DataSize uint32, pData *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(DataSize),
 		uintptr(unsafe.Pointer(pData)),
@@ -90,10 +77,7 @@ func (this *DXGIResource) SetPrivateData(Name *GUID, DataSize uint32, pData *int
 }
 func (this *DXGIResource) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetPrivateDataInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateDataInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pUnknown)),
 	)
@@ -103,10 +87,7 @@ func (this *DXGIResource) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown
 func (this *DXGIResource) GetPrivateData(Name *GUID, pDataSize *uint32) (*interface{}, error) {
 	var err error
 	var pData *interface{}
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.GetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pDataSize)),
 		uintptr(unsafe.Pointer(pData)),
@@ -119,10 +100,7 @@ func (this *DXGIResource) GetPrivateData(Name *GUID, pDataSize *uint32) (*interf
 func (this *DXGIResource) GetParent(riid *GUID) (*interface{}, error) {
 	var err error
 	var ppParent *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetParent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetParent, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppParent)),
 	)
@@ -134,63 +112,54 @@ func (this *DXGIResource) GetParent(riid *GUID) (*interface{}, error) {
 func (this *DXGIResource) GetSharedHandle() (*HANDLE, error) {
 	var err error
 	var pSharedHandle *HANDLE
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetSharedHandle,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetSharedHandle, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pSharedHandle)),
 		0,
 	)
 	err = GetError(uint32(ret))
 	return pSharedHandle, err
 }
-func (this *DXGIResource) GetUsage() (*DXGI_USAGE, error) {
+func (this *DXGIResource) GetUsage() (DXGI_USAGE, error) {
 	var err error
-	var pUsage *DXGI_USAGE
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetUsage,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pUsage)),
+	var usage DXGI_USAGE
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetUsage, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&usage)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pUsage, err
+	if err != nil {
+		return 0, err
+	}
+	return usage, nil
 }
 func (this *DXGIResource) SetEvictionPriority(EvictionPriority uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetEvictionPriority,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetEvictionPriority, uintptr(unsafe.Pointer(this)),
 		uintptr(EvictionPriority),
 		0,
 	)
 	err = GetError(uint32(ret))
 	return err
 }
-func (this *DXGIResource) GetEvictionPriority() (*uint32, error) {
+func (this *DXGIResource) GetEvictionPriority() (uint32, error) {
 	var err error
-	var pEvictionPriority *uint32
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetEvictionPriority,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pEvictionPriority)),
+	var evictionPriority uint32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetEvictionPriority, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&evictionPriority)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pEvictionPriority, err
+	if err != nil {
+		return 0, err
+	}
+	return evictionPriority, nil
 }
 
 /*** IDXGIResource1 methods ***/
 func (this *DXGIResource) CreateSubresourceSurface(index uint32) (*DXGISurface, error) {
 	var err error
 	var ppSurface *DXGISurface
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.CreateSubresourceSurface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CreateSubresourceSurface, uintptr(unsafe.Pointer(this)),
 		uintptr(index),
 		uintptr(unsafe.Pointer(&ppSurface)),
 	)
@@ -200,10 +169,7 @@ func (this *DXGIResource) CreateSubresourceSurface(index uint32) (*DXGISurface, 
 func (this *DXGIResource) CreateSharedHandle(pAttributes *SECURITY_ATTRIBUTES, dwAccess DWORD, lpName *[]byte) (*HANDLE, error) {
 	var err error
 	var pHandle *HANDLE
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.CreateSharedHandle,
-		5,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CreateSharedHandle, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pAttributes)),
 		uintptr(dwAccess),
 		uintptr(unsafe.Pointer(lpName)),

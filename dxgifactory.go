@@ -78,10 +78,7 @@ type factoryVtbl struct {
 /*** IDXGIObject methods ***/
 func (this *DXGIFactory) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.QueryInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(ppvObject)),
 	)
@@ -89,20 +86,14 @@ func (this *DXGIFactory) QueryInterface(riid *GUID, ppvObject *interface{}) erro
 	return err
 }
 func (this *DXGIFactory) AddRef() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.AddRef,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.AddRef, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
 	return uint32(ret)
 }
 func (this *DXGIFactory) Release() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.Release,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Release, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -112,10 +103,7 @@ func (this *DXGIFactory) Release() uint32 {
 /*** IDXGIObject methods ***/
 func (this *DXGIFactory) SetPrivateData(Name *GUID, DataSize uint32, pData *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(DataSize),
 		uintptr(unsafe.Pointer(pData)),
@@ -127,10 +115,7 @@ func (this *DXGIFactory) SetPrivateData(Name *GUID, DataSize uint32, pData *inte
 }
 func (this *DXGIFactory) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetPrivateDataInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateDataInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pUnknown)),
 	)
@@ -140,10 +125,7 @@ func (this *DXGIFactory) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown)
 func (this *DXGIFactory) GetPrivateData(Name *GUID, pDataSize *uint32) (*interface{}, error) {
 	var err error
 	var pData *interface{}
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.GetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pDataSize)),
 		uintptr(unsafe.Pointer(pData)),
@@ -156,10 +138,7 @@ func (this *DXGIFactory) GetPrivateData(Name *GUID, pDataSize *uint32) (*interfa
 func (this *DXGIFactory) GetParent(riid *GUID) (*interface{}, error) {
 	var err error
 	var ppParent *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetParent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetParent, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppParent)),
 	)
@@ -171,10 +150,7 @@ func (this *DXGIFactory) GetParent(riid *GUID) (*interface{}, error) {
 func (this *DXGIFactory) EnumAdapters(adapteIdx uint32) (*DXGIAdapter, error) {
 	var err error
 	var adapter uintptr
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.EnumAdapters,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.EnumAdapters, uintptr(unsafe.Pointer(this)),
 		uintptr(adapteIdx),
 		uintptr(unsafe.Pointer(&adapter)),
 	)
@@ -183,10 +159,7 @@ func (this *DXGIFactory) EnumAdapters(adapteIdx uint32) (*DXGIAdapter, error) {
 }
 func (this *DXGIFactory) MakeWindowAssociation(windowHandle HANDLE, flags uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.MakeWindowAssociation,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.MakeWindowAssociation, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(windowHandle)),
 		uintptr(flags),
 	)
@@ -196,10 +169,7 @@ func (this *DXGIFactory) MakeWindowAssociation(windowHandle HANDLE, flags uint32
 func (this *DXGIFactory) GetWindowAssociation() (HANDLE, error) {
 	var err error
 	var windowHandle HANDLE
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetWindowAssociation,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetWindowAssociation, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(&windowHandle)),
 		0,
 	)
@@ -209,10 +179,7 @@ func (this *DXGIFactory) GetWindowAssociation() (HANDLE, error) {
 func (this *DXGIFactory) CreateSwapChain(Device *Unknown, Desc *DXGISwapChainDesc) (*DXGISwapChain, error) {
 	var err error
 	var swapChain uintptr
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.CreateSwapChain,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CreateSwapChain, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Device)),
 		uintptr(unsafe.Pointer(Desc)),
 		uintptr(unsafe.Pointer(&swapChain)),
@@ -225,10 +192,7 @@ func (this *DXGIFactory) CreateSwapChain(Device *Unknown, Desc *DXGISwapChainDes
 func (this *DXGIFactory) CreateSoftwareAdapter(Module *interface{}) (*DXGIAdapter, error) {
 	var err error
 	var adapter uintptr
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.CreateSoftwareAdapter,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CreateSoftwareAdapter, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Module)),
 		uintptr(unsafe.Pointer(&adapter)),
 	)
@@ -240,10 +204,7 @@ func (this *DXGIFactory) CreateSoftwareAdapter(Module *interface{}) (*DXGIAdapte
 func (this *DXGIFactory) EnumAdapters1(adapteIdx uint32) (*DXGIAdapter, error) {
 	var err error
 	var adapter *DXGIAdapter
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.EnumAdapters1,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.EnumAdapters1, uintptr(unsafe.Pointer(this)),
 		uintptr(adapteIdx),
 		uintptr(unsafe.Pointer(&adapter)),
 	)
@@ -254,10 +215,7 @@ func (this *DXGIFactory) EnumAdapters1(adapteIdx uint32) (*DXGIAdapter, error) {
 	return adapter, nil
 }
 func (this *DXGIFactory) IsCurrent() bool {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.IsCurrent,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.IsCurrent, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -266,10 +224,7 @@ func (this *DXGIFactory) IsCurrent() bool {
 
 /*** IDXGIFactory2 methods ***/
 func (this *DXGIFactory) IsWindowedStereoEnabled() bool {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.IsWindowedStereoEnabled,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.IsWindowedStereoEnabled, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -278,10 +233,7 @@ func (this *DXGIFactory) IsWindowedStereoEnabled() bool {
 func (this *DXGIFactory) CreateSwapChainForHwnd(pDevice *interface{}, hWnd HWND, pDesc *DXGI_SWAP_CHAIN_DESC1, pFullscreenDesc *DXGI_SWAP_CHAIN_FULLSCREEN_DESC, pRestrictToOutput *DXGIOutput) (*DXGISwapChain, error) {
 	var err error
 	var ppSwapChain *DXGISwapChain
-	ret, _, _ := syscall.Syscall9(
-		this.lpVtbl.CreateSwapChainForHwnd,
-		7,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CreateSwapChainForHwnd, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pDevice)),
 		uintptr(unsafe.Pointer(hWnd)),
 		uintptr(unsafe.Pointer(pDesc)),
@@ -297,10 +249,7 @@ func (this *DXGIFactory) CreateSwapChainForHwnd(pDevice *interface{}, hWnd HWND,
 func (this *DXGIFactory) CreateSwapChainForCoreWindow(pDevice, pWindow *interface{}, pDesc *DXGI_SWAP_CHAIN_DESC1, pRestrictToOutput *DXGIOutput) (*DXGISwapChain, error) {
 	var err error
 	var ppSwapChain *DXGISwapChain
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.CreateSwapChainForCoreWindow,
-		6,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CreateSwapChainForCoreWindow, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pDevice)),
 		uintptr(unsafe.Pointer(pWindow)),
 		uintptr(unsafe.Pointer(pDesc)),
@@ -313,10 +262,7 @@ func (this *DXGIFactory) CreateSwapChainForCoreWindow(pDevice, pWindow *interfac
 func (this *DXGIFactory) GetSharedResourceAdapterLuid(hResource HANDLE) (*LUID, error) {
 	var err error
 	var pLuid *LUID
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetSharedResourceAdapterLuid,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetSharedResourceAdapterLuid, uintptr(unsafe.Pointer(this)),
 		uintptr(hResource),
 		uintptr(unsafe.Pointer(pLuid)),
 	)
@@ -326,10 +272,7 @@ func (this *DXGIFactory) GetSharedResourceAdapterLuid(hResource HANDLE) (*LUID, 
 func (this *DXGIFactory) RegisterOcclusionStatusWindow(WindowHandle HWND, wMsg uint32) error {
 	var err error
 	var pdwCookie *DWORD
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.RegisterOcclusionStatusWindow,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.RegisterOcclusionStatusWindow, uintptr(unsafe.Pointer(this)),
 		uintptr(WindowHandle),
 		uintptr(wMsg),
 		uintptr(unsafe.Pointer(pdwCookie)),
@@ -342,10 +285,7 @@ func (this *DXGIFactory) RegisterOcclusionStatusWindow(WindowHandle HWND, wMsg u
 func (this *DXGIFactory) RegisterStereoStatusEvent(hEvent HANDLE) (*DWORD, error) {
 	var err error
 	var pdwCookie *DWORD
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.RegisterStereoStatusEvent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.RegisterStereoStatusEvent, uintptr(unsafe.Pointer(this)),
 		uintptr(hEvent),
 		uintptr(unsafe.Pointer(pdwCookie)),
 	)
@@ -354,10 +294,7 @@ func (this *DXGIFactory) RegisterStereoStatusEvent(hEvent HANDLE) (*DWORD, error
 }
 func (this *DXGIFactory) UnregisterStereoStatus(dwCookie DWORD) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.UnregisterStereoStatus,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.UnregisterStereoStatus, uintptr(unsafe.Pointer(this)),
 		uintptr(dwCookie),
 		0,
 	)
@@ -367,10 +304,7 @@ func (this *DXGIFactory) UnregisterStereoStatus(dwCookie DWORD) error {
 func (this *DXGIFactory) RegisterStereoStatusWindow(WindowHandle HWND, wMsg uint32) (*DWORD, error) {
 	var err error
 	var pdwCookie *DWORD
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.RegisterStereoStatusWindow,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.RegisterStereoStatusWindow, uintptr(unsafe.Pointer(this)),
 		uintptr(WindowHandle),
 		uintptr(wMsg),
 		uintptr(unsafe.Pointer(pdwCookie)),
@@ -383,10 +317,7 @@ func (this *DXGIFactory) RegisterStereoStatusWindow(WindowHandle HWND, wMsg uint
 func (this *DXGIFactory) RegisterOcclusionStatusEvent(hEvent HANDLE) (*DWORD, error) {
 	var err error
 	var pdwCookie *DWORD
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.RegisterOcclusionStatusEvent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.RegisterOcclusionStatusEvent, uintptr(unsafe.Pointer(this)),
 		uintptr(hEvent),
 		uintptr(unsafe.Pointer(pdwCookie)),
 	)
@@ -395,10 +326,7 @@ func (this *DXGIFactory) RegisterOcclusionStatusEvent(hEvent HANDLE) (*DWORD, er
 }
 func (this *DXGIFactory) UnregisterOcclusionStatus(dwCookie DWORD) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.UnregisterOcclusionStatus,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.UnregisterOcclusionStatus, uintptr(unsafe.Pointer(this)),
 		uintptr(dwCookie),
 		0,
 	)
@@ -408,10 +336,7 @@ func (this *DXGIFactory) UnregisterOcclusionStatus(dwCookie DWORD) error {
 func (this *DXGIFactory) CreateSwapChainForComposition(pDevice *interface{}, pDesc *DXGI_SWAP_CHAIN_DESC1, pRestrictToOutput *DXGIOutput) (*DXGISwapChain, error) {
 	var err error
 	var ppSwapChain *DXGISwapChain
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.CreateSwapChainForComposition,
-		5,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CreateSwapChainForComposition, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pDevice)),
 		uintptr(unsafe.Pointer(pDesc)),
 		uintptr(unsafe.Pointer(pRestrictToOutput)),
@@ -424,10 +349,7 @@ func (this *DXGIFactory) CreateSwapChainForComposition(pDevice *interface{}, pDe
 
 /*** IDXGIFactory3 methods ***/
 func (this *DXGIFactory) GetCreationFlags() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetCreationFlags,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetCreationFlags, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -438,10 +360,7 @@ func (this *DXGIFactory) GetCreationFlags() uint32 {
 func (this *DXGIFactory) EnumAdapterByLuid(AdapterLuid *GUID, riid *GUID) (*DXGIAdapter, error) {
 	var err error
 	var ppvAdapter *DXGIAdapter
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.EnumAdapterByLuid,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.EnumAdapterByLuid, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(AdapterLuid)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppvAdapter)),
@@ -454,10 +373,7 @@ func (this *DXGIFactory) EnumAdapterByLuid(AdapterLuid *GUID, riid *GUID) (*DXGI
 func (this *DXGIFactory) EnumWarpAdapter(riid *GUID) (*DXGIAdapter, error) {
 	var err error
 	var ppvAdapter *DXGIAdapter
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.EnumWarpAdapter,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.EnumWarpAdapter, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppvAdapter)),
 	)
@@ -468,10 +384,7 @@ func (this *DXGIFactory) EnumWarpAdapter(riid *GUID) (*DXGIAdapter, error) {
 /*** IDXGIFactory5 methods ***/
 func (this *DXGIFactory) CheckFeatureSupport(Feature uint32, pFeatureSupportData *interface{}, FeatureSupportDataSize uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.CheckFeatureSupport,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CheckFeatureSupport, uintptr(unsafe.Pointer(this)),
 		uintptr(Feature),
 		uintptr(unsafe.Pointer(pFeatureSupportData)),
 		uintptr(FeatureSupportDataSize),
@@ -486,10 +399,7 @@ func (this *DXGIFactory) CheckFeatureSupport(Feature uint32, pFeatureSupportData
 func (this *DXGIFactory) EnumAdapterByGpuPreference(Adapter uint32, GpuPreference uint32, riid *GUID) (*DXGIAdapter, error) {
 	var err error
 	var ppvAdapter *DXGIAdapter
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.EnumAdapterByGpuPreference,
-		5,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.EnumAdapterByGpuPreference, uintptr(unsafe.Pointer(this)),
 		uintptr(Adapter),
 		uintptr(GpuPreference),
 		uintptr(unsafe.Pointer(riid)),
@@ -504,10 +414,7 @@ func (this *DXGIFactory) EnumAdapterByGpuPreference(Adapter uint32, GpuPreferenc
 func (this *DXGIFactory) RegisterAdaptersChangedEvent(hEvent HANDLE) (*DWORD, error) {
 	var err error
 	var pdwCookie *DWORD
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.RegisterAdaptersChangedEvent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.RegisterAdaptersChangedEvent, uintptr(unsafe.Pointer(this)),
 		uintptr(hEvent),
 		uintptr(unsafe.Pointer(pdwCookie)),
 	)
@@ -516,10 +423,7 @@ func (this *DXGIFactory) RegisterAdaptersChangedEvent(hEvent HANDLE) (*DWORD, er
 }
 func (this *DXGIFactory) UnregisterAdaptersChangedEvent(dwCookie DWORD) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.UnregisterAdaptersChangedEvent,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.UnregisterAdaptersChangedEvent, uintptr(unsafe.Pointer(this)),
 		uintptr(dwCookie),
 		0,
 	)

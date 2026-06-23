@@ -26,10 +26,13 @@ func init() {
 }
 
 type DXGIOutput struct {
-	Unknown
 	lpVtbl *outputVtbl
 }
 type outputVtbl struct {
+	/*** IUnknown methods ***/
+	QueryInterface uintptr
+	AddRef         uintptr
+	Release        uintptr
 	/*** IDXGIObject methods ***/
 	SetPrivateData          uintptr
 	SetPrivateDataInterface uintptr
@@ -48,6 +51,8 @@ type outputVtbl struct {
 	SetDisplaySurface           uintptr
 	GetDisplaySurfaceData       uintptr
 	GetFrameStatistics          uintptr
+	/*** IDXGIOutput1 methods ***/
+	DuplicateOutput uintptr
 	/*** IDXGIOutput2 methods ***/
 	SupportsOverlays uintptr
 	/*** IDXGIOutput3 methods ***/
@@ -63,48 +68,37 @@ type outputVtbl struct {
 
 /*** IDXGIOutput methods ***/
 func (this *DXGIOutput) GetDesc() (*DXGIOutputDesc, error) {
-	var outputDesc *DXGIOutputDesc
-	ret, _, _ := syscall.Syscall(
+	var outputDesc DXGIOutputDesc
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetDesc,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(outputDesc)),
-		0,
+		uintptr(unsafe.Pointer(&outputDesc)),
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
 		return nil, err
 	}
-	return outputDesc, nil
+	return &outputDesc, nil
 }
-func (this *DXGIOutput) GetDisplayModeList(EnumFormat uint32, Flags uint32, NumModes *uint32) (*DXGIModeDesc, error) {
-	var modeDesc *DXGIModeDesc
-	ret, _, _ := syscall.Syscall6(
+func (this *DXGIOutput) GetDisplayModeList(EnumFormat uint32, Flags uint32, NumModes *uint32, pDesc *DXGIModeDesc) error {
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetDisplayModeList,
-		5,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(EnumFormat),
 		uintptr(Flags),
 		uintptr(unsafe.Pointer(NumModes)),
-		uintptr(unsafe.Pointer(modeDesc)),
-		0,
+		uintptr(unsafe.Pointer(pDesc)),
 	)
 	err := GetError(uint32(ret))
-	if err != nil {
-		return nil, err
-	}
-	return modeDesc, nil
+	return err
 }
 func (this *DXGIOutput) FindClosestMatchingMode(ModeToMatch *DXGIModeDesc, ClosestMatch *DXGIModeDesc, ConcernedDevice *IUnknown) error {
-	ret, _, _ := syscall.Syscall6(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.FindClosestMatchingMode,
-		4,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(ModeToMatch)),
 		uintptr(unsafe.Pointer(ClosestMatch)),
 		uintptr(unsafe.Pointer(ConcernedDevice)),
-		0,
-		0,
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
@@ -113,12 +107,9 @@ func (this *DXGIOutput) FindClosestMatchingMode(ModeToMatch *DXGIModeDesc, Close
 	return nil
 }
 func (this *DXGIOutput) WaitForVBlank() error {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.WaitForVBlank,
-		1,
 		uintptr(unsafe.Pointer(this)),
-		0,
-		0,
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
@@ -127,12 +118,11 @@ func (this *DXGIOutput) WaitForVBlank() error {
 	return nil
 }
 func (this *DXGIOutput) TakeOwnership(Device *IUnknown, Exclusive bool) error {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.TakeOwnership,
-		3,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Device)),
-		uintptr(unsafe.Pointer(&Exclusive)),
+		boolToInt(Exclusive),
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
@@ -141,36 +131,29 @@ func (this *DXGIOutput) TakeOwnership(Device *IUnknown, Exclusive bool) error {
 	return nil
 }
 func (this *DXGIOutput) ReleaseOwnership() {
-	syscall.Syscall(
+	syscall.SyscallN(
 		this.lpVtbl.ReleaseOwnership,
-		1,
 		uintptr(unsafe.Pointer(this)),
-		0,
-		0,
 	)
 }
 func (this *DXGIOutput) GetGammaControlCapabilities() (*DXGIGammaControlCapabilities, error) {
-	var gammaCaps *DXGIGammaControlCapabilities
-	ret, _, _ := syscall.Syscall(
+	var gammaCaps DXGIGammaControlCapabilities
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetGammaControlCapabilities,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(gammaCaps)),
-		0,
+		uintptr(unsafe.Pointer(&gammaCaps)),
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
 		return nil, err
 	}
-	return gammaCaps, nil
+	return &gammaCaps, nil
 }
 func (this *DXGIOutput) SetGammaControl(array *DXGIGammaControl) error {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.SetGammaControl,
-		2,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(array)),
-		0,
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
@@ -179,27 +162,23 @@ func (this *DXGIOutput) SetGammaControl(array *DXGIGammaControl) error {
 	return nil
 }
 func (this *DXGIOutput) GetGammaControl() (*DXGIGammaControl, error) {
-	var array *DXGIGammaControl
-	ret, _, _ := syscall.Syscall(
+	var gammaControl DXGIGammaControl
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetGammaControl,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(array)),
-		0,
+		uintptr(unsafe.Pointer(&gammaControl)),
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
 		return nil, err
 	}
-	return array, nil
+	return &gammaControl, nil
 }
 func (this *DXGIOutput) SetDisplaySurface(ScanoutSurface *DXGISurface) error {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.SetDisplaySurface,
-		2,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(ScanoutSurface)),
-		0,
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
@@ -209,12 +188,10 @@ func (this *DXGIOutput) SetDisplaySurface(ScanoutSurface *DXGISurface) error {
 }
 func (this *DXGIOutput) GetDisplaySurfaceData() (*DXGISurface, error) {
 	var destination *DXGISurface
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetDisplaySurfaceData,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(destination)),
-		0,
+		uintptr(unsafe.Pointer(&destination)),
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
@@ -223,82 +200,165 @@ func (this *DXGIOutput) GetDisplaySurfaceData() (*DXGISurface, error) {
 	return destination, nil
 }
 func (this *DXGIOutput) GetFrameStatistics() (*DXGI_FRAME_STATISTICS, error) {
-	var stats *DXGI_FRAME_STATISTICS
-	ret, _, _ := syscall.Syscall(
+	var stats DXGI_FRAME_STATISTICS
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetFrameStatistics,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(stats)),
-		0,
+		uintptr(unsafe.Pointer(&stats)),
 	)
 	err := GetError(uint32(ret))
 	if err != nil {
 		return nil, err
 	}
-	return stats, nil
+	return &stats, nil
+}
+
+/*** IDXGIObject methods ***/
+func (this *DXGIOutput) QueryInterface(riid *GUID, ppvObject *interface{}) error {
+	var err error
+	ret, _, _ := syscall.SyscallN(
+		this.lpVtbl.QueryInterface,
+		uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(riid)),
+		uintptr(unsafe.Pointer(ppvObject)),
+	)
+	err = GetError(uint32(ret))
+	return err
+}
+func (this *DXGIOutput) AddRef() uint32 {
+	ret, _, _ := syscall.SyscallN(
+		this.lpVtbl.AddRef,
+		uintptr(unsafe.Pointer(this)),
+	)
+	return uint32(ret)
+}
+func (this *DXGIOutput) Release() uint32 {
+	ret, _, _ := syscall.SyscallN(
+		this.lpVtbl.Release,
+		uintptr(unsafe.Pointer(this)),
+	)
+	return uint32(ret)
+}
+func (this *DXGIOutput) SetPrivateData(Name *GUID, DataSize uint32, pData *interface{}) error {
+	var err error
+	ret, _, _ := syscall.SyscallN(
+		this.lpVtbl.SetPrivateData,
+		uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(Name)),
+		uintptr(DataSize),
+		uintptr(unsafe.Pointer(pData)),
+	)
+	err = GetError(uint32(ret))
+	return err
+}
+func (this *DXGIOutput) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) error {
+	var err error
+	ret, _, _ := syscall.SyscallN(
+		this.lpVtbl.SetPrivateDataInterface,
+		uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(Name)),
+		uintptr(unsafe.Pointer(pUnknown)),
+	)
+	err = GetError(uint32(ret))
+	return err
+}
+func (this *DXGIOutput) GetPrivateData(Name *GUID, pDataSize *uint32) (*interface{}, error) {
+	var err error
+	var pData *interface{}
+	ret, _, _ := syscall.SyscallN(
+		this.lpVtbl.GetPrivateData,
+		uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(Name)),
+		uintptr(unsafe.Pointer(pDataSize)),
+		uintptr(unsafe.Pointer(pData)),
+	)
+	err = GetError(uint32(ret))
+	return pData, err
+}
+func (this *DXGIOutput) GetParent(riid *GUID) (*interface{}, error) {
+	var err error
+	var ppParent *interface{}
+	ret, _, _ := syscall.SyscallN(
+		this.lpVtbl.GetParent,
+		uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(riid)),
+		uintptr(unsafe.Pointer(&ppParent)),
+	)
+	err = GetError(uint32(ret))
+	return ppParent, err
+}
+
+/*** IDXGIOutput1 methods ***/
+func (this *DXGIOutput) DuplicateOutput(pDevice *IUnknown) (*DXGIOutputDuplication, error) {
+	var err error
+	var ppOutputDuplication *DXGIOutputDuplication
+	ret, _, _ := syscall.SyscallN(
+		this.lpVtbl.DuplicateOutput,
+		uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(pDevice)),
+		uintptr(unsafe.Pointer(&ppOutputDuplication)),
+	)
+	err = GetError(uint32(ret))
+	return ppOutputDuplication, err
 }
 
 /*** IDXGIOutput2 methods ***/
 func (this *DXGIOutput) SupportsOverlays() bool {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.SupportsOverlays,
-		1,
 		uintptr(unsafe.Pointer(this)),
-		0,
-		0,
 	)
 	return intToBool(ret)
 }
 
 /*** IDXGIOutput3 methods ***/
-func (this *DXGIOutput) CheckOverlaySupport(EnumFormat uint32, pConcernedDevice *interface{}) (*uint32, error) {
+func (this *DXGIOutput) CheckOverlaySupport(EnumFormat uint32, pConcernedDevice *interface{}) (uint32, error) {
 	var err error
-	var pFlags *uint32
-	ret, _, _ := syscall.Syscall6(
+	var flags uint32
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.CheckOverlaySupport,
-		4,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(EnumFormat),
 		uintptr(unsafe.Pointer(pConcernedDevice)),
-		uintptr(unsafe.Pointer(pFlags)),
-		0,
-		0,
+		uintptr(unsafe.Pointer(&flags)),
 	)
 	err = GetError(uint32(ret))
-	return pFlags, err
+	if err != nil {
+		return 0, err
+	}
+	return flags, nil
 }
 
 /*** IDXGIOutput4 methods ***/
-func (this *DXGIOutput) CheckOverlayColorSpaceSupport(Format uint32, ColorSpace uint32, pConcernedDevice *DXGIDevice) (*uint32, error) {
+func (this *DXGIOutput) CheckOverlayColorSpaceSupport(Format uint32, ColorSpace uint32, pConcernedDevice *DXGIDevice) (uint32, error) {
 	var err error
-	var pFlags *uint32
-	ret, _, _ := syscall.Syscall6(
+	var flags uint32
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.CheckOverlayColorSpaceSupport,
-		5,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(Format),
 		uintptr(ColorSpace),
 		uintptr(unsafe.Pointer(pConcernedDevice)),
-		uintptr(unsafe.Pointer(pFlags)),
-		0,
+		uintptr(unsafe.Pointer(&flags)),
 	)
 	err = GetError(uint32(ret))
-	return pFlags, err
+	if err != nil {
+		return 0, err
+	}
+	return flags, nil
 }
 
 /*** IDXGIOutput5 methods ***/
 func (this *DXGIOutput) DuplicateOutput1(pDevice *DXGIDevice, SupportedFormatsCount uint32, pSupportedFormats *uint32) (*DXGIOutputDuplication, error) {
 	var err error
 	var ppOutputDuplication *DXGIOutputDuplication
-	ret, _, _ := syscall.Syscall6(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.DuplicateOutput1,
-		5,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pDevice)),
 		uintptr(SupportedFormatsCount),
 		uintptr(unsafe.Pointer(pSupportedFormats)),
 		uintptr(unsafe.Pointer(&ppOutputDuplication)),
-		0,
 	)
 	err = GetError(uint32(ret))
 	return ppOutputDuplication, err
@@ -307,27 +367,29 @@ func (this *DXGIOutput) DuplicateOutput1(pDevice *DXGIDevice, SupportedFormatsCo
 /*** IDXGIOutput6 methods ***/
 func (this *DXGIOutput) GetDesc1() (*DXGI_OUTPUT_DESC1, error) {
 	var err error
-	var pDesc *DXGI_OUTPUT_DESC1
-	ret, _, _ := syscall.Syscall(
+	var desc DXGI_OUTPUT_DESC1
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetDesc1,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pDesc)),
-		0,
+		uintptr(unsafe.Pointer(&desc)),
 	)
 	err = GetError(uint32(ret))
-	return pDesc, err
+	if err != nil {
+		return nil, err
+	}
+	return &desc, nil
 }
-func (this *DXGIOutput) CheckHardwareCompositionSupport() (*uint32, error) {
+func (this *DXGIOutput) CheckHardwareCompositionSupport() (uint32, error) {
 	var err error
-	var pFlags *uint32
-	ret, _, _ := syscall.Syscall(
+	var flags uint32
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.CheckHardwareCompositionSupport,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pFlags)),
-		0,
+		uintptr(unsafe.Pointer(&flags)),
 	)
 	err = GetError(uint32(ret))
-	return pFlags, err
+	if err != nil {
+		return 0, err
+	}
+	return flags, nil
 }

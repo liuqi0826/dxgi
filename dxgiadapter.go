@@ -20,7 +20,6 @@ func init() {
 }
 
 type DXGIAdapter struct {
-	Unknown
 	lpVtbl *adapterVtbl
 }
 
@@ -56,10 +55,7 @@ type adapterVtbl struct {
 /*** IDXGIObject methods ***/
 func (this *DXGIAdapter) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.QueryInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(ppvObject)),
 	)
@@ -67,22 +63,16 @@ func (this *DXGIAdapter) QueryInterface(riid *GUID, ppvObject *interface{}) erro
 	return err
 }
 func (this *DXGIAdapter) AddRef() uint32 {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.AddRef,
-		1,
 		uintptr(unsafe.Pointer(this)),
-		0,
-		0,
 	)
 	return uint32(ret)
 }
 func (this *DXGIAdapter) Release() uint32 {
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.Release,
-		1,
 		uintptr(unsafe.Pointer(this)),
-		0,
-		0,
 	)
 	return uint32(ret)
 }
@@ -90,10 +80,7 @@ func (this *DXGIAdapter) Release() uint32 {
 /*** IDXGIObject methods ***/
 func (this *DXGIAdapter) SetPrivateData(Name *GUID, DataSize uint32, pData *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(DataSize),
 		uintptr(unsafe.Pointer(pData)),
@@ -105,10 +92,7 @@ func (this *DXGIAdapter) SetPrivateData(Name *GUID, DataSize uint32, pData *inte
 }
 func (this *DXGIAdapter) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetPrivateDataInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateDataInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pUnknown)),
 	)
@@ -118,10 +102,7 @@ func (this *DXGIAdapter) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown)
 func (this *DXGIAdapter) GetPrivateData(Name *GUID, pDataSize *uint32) (*interface{}, error) {
 	var err error
 	var pData *interface{}
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.GetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pDataSize)),
 		uintptr(unsafe.Pointer(pData)),
@@ -134,10 +115,7 @@ func (this *DXGIAdapter) GetPrivateData(Name *GUID, pDataSize *uint32) (*interfa
 func (this *DXGIAdapter) GetParent(riid *GUID) (*interface{}, error) {
 	var err error
 	var ppParent *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetParent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetParent, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppParent)),
 	)
@@ -148,82 +126,79 @@ func (this *DXGIAdapter) GetParent(riid *GUID) (*interface{}, error) {
 /*** IDXGIAdapter methods ***/
 func (this *DXGIAdapter) CheckInterfaceSupport(riid *GUID, pUMDVersion *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.CheckInterfaceSupport,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CheckInterfaceSupport, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(pUMDVersion)),
 	)
 	err = GetError(uint32(ret))
 	return err
 }
-func (this *DXGIAdapter) EnumOutputs(Output uint32) (*interface{}, error) {
+func (this *DXGIAdapter) EnumOutputs(Output uint32) (*DXGIOutput, error) {
 	var err error
-	var ppOutput *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.EnumOutputs,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	var ppOutput *DXGIOutput
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.EnumOutputs, uintptr(unsafe.Pointer(this)),
 		uintptr(Output),
 		uintptr(unsafe.Pointer(&ppOutput)),
 	)
 	err = GetError(uint32(ret))
-	return ppOutput, err
+	if err != nil {
+		return nil, err
+	}
+	return ppOutput, nil
 }
 func (this *DXGIAdapter) GetDesc() (*DXGI_ADAPTER_DESC, error) {
 	var err error
-	var pDesc *DXGI_ADAPTER_DESC
-	ret, _, _ := syscall.Syscall(
+	var desc DXGI_ADAPTER_DESC
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetDesc,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pDesc)),
-		0,
+		uintptr(unsafe.Pointer(&desc)),
 	)
 	err = GetError(uint32(ret))
-	return pDesc, err
+	if err != nil {
+		return nil, err
+	}
+	return &desc, nil
 }
 
 /*** IDXGIAdapter1 methods ***/
 func (this *DXGIAdapter) GetDesc1() (*DXGI_ADAPTER_DESC1, error) {
 	var err error
-	var pDesc *DXGI_ADAPTER_DESC1
-	ret, _, _ := syscall.Syscall(
+	var desc DXGI_ADAPTER_DESC1
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetDesc1,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pDesc)),
-		0,
+		uintptr(unsafe.Pointer(&desc)),
 	)
 	err = GetError(uint32(ret))
-	return pDesc, err
+	if err != nil {
+		return nil, err
+	}
+	return &desc, nil
 }
 
 /*** IDXGIAdapter methods ***/
 
 func (this *DXGIAdapter) GetDesc2() (*DXGI_ADAPTER_DESC2, error) {
 	var err error
-	var pDesc *DXGI_ADAPTER_DESC2
-	ret, _, _ := syscall.Syscall(
+	var desc DXGI_ADAPTER_DESC2
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetDesc2,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pDesc)),
-		0,
+		uintptr(unsafe.Pointer(&desc)),
 	)
 	err = GetError(uint32(ret))
-	return pDesc, err
+	if err != nil {
+		return nil, err
+	}
+	return &desc, nil
 }
 
 /*** IDXGIAdapter3 methods ***/
 func (this *DXGIAdapter) RegisterHardwareContentProtectionTeardownStatusEvent(hEvent HANDLE) (*DWORD, error) {
 	var err error
 	var pdwCookie *DWORD
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.RegisterHardwareContentProtectionTeardownStatusEvent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.RegisterHardwareContentProtectionTeardownStatusEvent, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(hEvent)),
 		uintptr(unsafe.Pointer(pdwCookie)),
 	)
@@ -232,38 +207,33 @@ func (this *DXGIAdapter) RegisterHardwareContentProtectionTeardownStatusEvent(hE
 }
 func (this *DXGIAdapter) UnregisterHardwareContentProtectionTeardownStatus(dwCookie DWORD) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.UnregisterHardwareContentProtectionTeardownStatus,
-		2,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(dwCookie),
-		0,
 	)
 	err = GetError(uint32(ret))
 	return err
 }
 func (this *DXGIAdapter) QueryVideoMemoryInfo(NodeIndex uint32, MemorySegmentGroup uint32) (*DXGI_QUERY_VIDEO_MEMORY_INFO, error) {
 	var err error
-	var pVideoMemoryInfo *DXGI_QUERY_VIDEO_MEMORY_INFO
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.QueryVideoMemoryInfo,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	var videoMemoryInfo DXGI_QUERY_VIDEO_MEMORY_INFO
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryVideoMemoryInfo, uintptr(unsafe.Pointer(this)),
 		uintptr(NodeIndex),
 		uintptr(MemorySegmentGroup),
-		uintptr(unsafe.Pointer(pVideoMemoryInfo)),
+		uintptr(unsafe.Pointer(&videoMemoryInfo)),
 		0,
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pVideoMemoryInfo, err
+	if err != nil {
+		return nil, err
+	}
+	return &videoMemoryInfo, nil
 }
 func (this *DXGIAdapter) SetVideoMemoryReservation(NodeIndex uint32, MemorySegmentGroup uint32, Reservation uint64) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetVideoMemoryReservation,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetVideoMemoryReservation, uintptr(unsafe.Pointer(this)),
 		uintptr(NodeIndex),
 		uintptr(MemorySegmentGroup),
 		uintptr(Reservation),
@@ -276,10 +246,7 @@ func (this *DXGIAdapter) SetVideoMemoryReservation(NodeIndex uint32, MemorySegme
 func (this *DXGIAdapter) RegisterVideoMemoryBudgetChangeNotificationEvent(hEvent HANDLE) (*DWORD, error) {
 	var err error
 	var pdwCookie *DWORD
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.RegisterVideoMemoryBudgetChangeNotificationEvent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.RegisterVideoMemoryBudgetChangeNotificationEvent, uintptr(unsafe.Pointer(this)),
 		uintptr(hEvent),
 		uintptr(unsafe.Pointer(pdwCookie)),
 	)
@@ -288,12 +255,10 @@ func (this *DXGIAdapter) RegisterVideoMemoryBudgetChangeNotificationEvent(hEvent
 }
 func (this *DXGIAdapter) UnregisterVideoMemoryBudgetChangeNotification(dwCookie DWORD) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.UnregisterVideoMemoryBudgetChangeNotification,
-		2,
 		uintptr(unsafe.Pointer(this)),
 		uintptr(dwCookie),
-		0,
 	)
 	err = GetError(uint32(ret))
 	return err
@@ -302,14 +267,15 @@ func (this *DXGIAdapter) UnregisterVideoMemoryBudgetChangeNotification(dwCookie 
 /*** IDXGIAdapter4 methods ***/
 func (this *DXGIAdapter) GetDesc3() (*DXGI_ADAPTER_DESC3, error) {
 	var err error
-	var pDesc *DXGI_ADAPTER_DESC3
-	ret, _, _ := syscall.Syscall(
+	var desc DXGI_ADAPTER_DESC3
+	ret, _, _ := syscall.SyscallN(
 		this.lpVtbl.GetDesc3,
-		2,
 		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pDesc)),
-		0,
+		uintptr(unsafe.Pointer(&desc)),
 	)
 	err = GetError(uint32(ret))
-	return pDesc, err
+	if err != nil {
+		return nil, err
+	}
+	return &desc, nil
 }

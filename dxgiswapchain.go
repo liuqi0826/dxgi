@@ -22,7 +22,6 @@ func init() {
 }
 
 type DXGISwapChain struct {
-	Unknown
 	lpVtbl *swapChainVtbl
 }
 type swapChainVtbl struct {
@@ -78,10 +77,7 @@ type swapChainVtbl struct {
 /*** IDXGIObject methods ***/
 func (this *DXGISwapChain) QueryInterface(riid *GUID, ppvObject *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.QueryInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.QueryInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(ppvObject)),
 	)
@@ -89,20 +85,14 @@ func (this *DXGISwapChain) QueryInterface(riid *GUID, ppvObject *interface{}) er
 	return err
 }
 func (this *DXGISwapChain) AddRef() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.AddRef,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.AddRef, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
 	return uint32(ret)
 }
 func (this *DXGISwapChain) Release() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.Release,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Release, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -112,10 +102,7 @@ func (this *DXGISwapChain) Release() uint32 {
 /*** IDXGIObject methods ***/
 func (this *DXGISwapChain) SetPrivateData(Name *GUID, DataSize uint32, pData *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(DataSize),
 		uintptr(unsafe.Pointer(pData)),
@@ -127,10 +114,7 @@ func (this *DXGISwapChain) SetPrivateData(Name *GUID, DataSize uint32, pData *in
 }
 func (this *DXGISwapChain) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknown) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetPrivateDataInterface,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetPrivateDataInterface, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pUnknown)),
 	)
@@ -140,10 +124,7 @@ func (this *DXGISwapChain) SetPrivateDataInterface(Name *GUID, pUnknown *IUnknow
 func (this *DXGISwapChain) GetPrivateData(Name *GUID, pDataSize *uint32) (*interface{}, error) {
 	var err error
 	var pData *interface{}
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.GetPrivateData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetPrivateData, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(Name)),
 		uintptr(unsafe.Pointer(pDataSize)),
 		uintptr(unsafe.Pointer(pData)),
@@ -156,10 +137,7 @@ func (this *DXGISwapChain) GetPrivateData(Name *GUID, pDataSize *uint32) (*inter
 func (this *DXGISwapChain) GetParent(riid *GUID) (*interface{}, error) {
 	var err error
 	var ppParent *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetParent,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetParent, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppParent)),
 	)
@@ -170,10 +148,7 @@ func (this *DXGISwapChain) GetParent(riid *GUID) (*interface{}, error) {
 /*** IDXGISwapChain methods ***/
 func (this *DXGISwapChain) Present(SyncInterval, Flags uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.Present,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Present, uintptr(unsafe.Pointer(this)),
 		uintptr(SyncInterval),
 		uintptr(Flags),
 	)
@@ -183,10 +158,7 @@ func (this *DXGISwapChain) Present(SyncInterval, Flags uint32) error {
 func (this *DXGISwapChain) GetBuffer(Buffer uint32, riid *GUID) (interface{}, error) {
 	var err error
 	var ppSurface interface{}
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.GetBuffer,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetBuffer, uintptr(unsafe.Pointer(this)),
 		uintptr(Buffer),
 		uintptr(unsafe.Pointer(riid)),
 		uintptr(unsafe.Pointer(&ppSurface)),
@@ -198,10 +170,7 @@ func (this *DXGISwapChain) GetBuffer(Buffer uint32, riid *GUID) (interface{}, er
 }
 func (this *DXGISwapChain) SetFullscreenState(Fullscreen bool, pTarget *DXGIOutput) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetFullscreenState,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetFullscreenState, uintptr(unsafe.Pointer(this)),
 		boolToInt(Fullscreen),
 		uintptr(unsafe.Pointer(pTarget)),
 	)
@@ -211,10 +180,7 @@ func (this *DXGISwapChain) SetFullscreenState(Fullscreen bool, pTarget *DXGIOutp
 func (this *DXGISwapChain) GetFullscreenState(pFullscreen *bool) (*DXGIOutput, error) {
 	var err error
 	var ppTarget *DXGIOutput
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetFullscreenState,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetFullscreenState, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pFullscreen)),
 		uintptr(unsafe.Pointer(&ppTarget)),
 	)
@@ -223,23 +189,20 @@ func (this *DXGISwapChain) GetFullscreenState(pFullscreen *bool) (*DXGIOutput, e
 }
 func (this *DXGISwapChain) GetDesc() (*DXGISwapChainDesc, error) {
 	var err error
-	var pDesc *DXGISwapChainDesc
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetDesc,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pDesc)),
+	var desc DXGISwapChainDesc
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetDesc, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&desc)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pDesc, err
+	if err != nil {
+		return nil, err
+	}
+	return &desc, nil
 }
 func (this *DXGISwapChain) ResizeBuffers(BufferCount, Width, Height uint32, NewFormat uint32, SwapChainFlags uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.ResizeBuffers,
-		6,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.ResizeBuffers, uintptr(unsafe.Pointer(this)),
 		uintptr(BufferCount),
 		uintptr(Width),
 		uintptr(Height),
@@ -251,10 +214,7 @@ func (this *DXGISwapChain) ResizeBuffers(BufferCount, Width, Height uint32, NewF
 }
 func (this *DXGISwapChain) ResizeTarget(pNewTargetParameters *DXGIModeDesc) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.ResizeTarget,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.ResizeTarget, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pNewTargetParameters)),
 		0,
 	)
@@ -264,10 +224,7 @@ func (this *DXGISwapChain) ResizeTarget(pNewTargetParameters *DXGIModeDesc) erro
 func (this *DXGISwapChain) GetContainingOutput() (*DXGIOutput, error) {
 	var err error
 	var ppOutput *DXGIOutput
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetContainingOutput,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetContainingOutput, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(&ppOutput)),
 		0,
 	)
@@ -276,78 +233,75 @@ func (this *DXGISwapChain) GetContainingOutput() (*DXGIOutput, error) {
 }
 func (this *DXGISwapChain) GetFrameStatistics() (*DXGI_FRAME_STATISTICS, error) {
 	var err error
-	var pStats *DXGI_FRAME_STATISTICS
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetFrameStatistics,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pStats)),
+	var stats DXGI_FRAME_STATISTICS
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetFrameStatistics, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&stats)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pStats, err
+	if err != nil {
+		return nil, err
+	}
+	return &stats, nil
 }
-func (this *DXGISwapChain) GetLastPresentCount() (*uint32, error) {
+func (this *DXGISwapChain) GetLastPresentCount() (uint32, error) {
 	var err error
-	var pLastPresentCount *uint32
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetLastPresentCount,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pLastPresentCount)),
+	var lastPresentCount uint32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetLastPresentCount, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&lastPresentCount)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pLastPresentCount, err
+	if err != nil {
+		return 0, err
+	}
+	return lastPresentCount, nil
 }
 
 /*** IDXGISwapChain1 methods ***/
 func (this *DXGISwapChain) GetDesc1() (*DXGI_SWAP_CHAIN_DESC1, error) {
 	var err error
-	var pDesc *DXGI_SWAP_CHAIN_DESC1
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetDesc1,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pDesc)),
+	var desc DXGI_SWAP_CHAIN_DESC1
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetDesc1, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&desc)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pDesc, err
+	if err != nil {
+		return nil, err
+	}
+	return &desc, nil
 }
 func (this *DXGISwapChain) GetFullscreenDesc() (*DXGI_SWAP_CHAIN_FULLSCREEN_DESC, error) {
 	var err error
-	var pDesc *DXGI_SWAP_CHAIN_FULLSCREEN_DESC
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetFullscreenDesc,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pDesc)),
+	var desc DXGI_SWAP_CHAIN_FULLSCREEN_DESC
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetFullscreenDesc, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&desc)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pDesc, err
+	if err != nil {
+		return nil, err
+	}
+	return &desc, nil
 }
-func (this *DXGISwapChain) GetHwnd() (*HWND, error) {
+func (this *DXGISwapChain) GetHwnd() (HWND, error) {
 	var err error
-	var pHwnd *HWND
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetHwnd,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pHwnd)),
+	var hwnd HWND
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetHwnd, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&hwnd)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pHwnd, err
+	if err != nil {
+		return 0, err
+	}
+	return hwnd, nil
 }
 func (this *DXGISwapChain) GetCoreWindow(refiid *GUID) (*interface{}, error) {
 	var err error
 	var ppUnk *interface{}
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetCoreWindow,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetCoreWindow, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(refiid)),
 		uintptr(unsafe.Pointer(&ppUnk)),
 	)
@@ -356,10 +310,7 @@ func (this *DXGISwapChain) GetCoreWindow(refiid *GUID) (*interface{}, error) {
 }
 func (this *DXGISwapChain) Present1(SyncInterval, PresentFlags uint32, pPresentParameters *DXGI_PRESENT_PARAMETERS) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.Present1,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.Present1, uintptr(unsafe.Pointer(this)),
 		uintptr(SyncInterval),
 		uintptr(PresentFlags),
 		uintptr(unsafe.Pointer(pPresentParameters)),
@@ -370,10 +321,7 @@ func (this *DXGISwapChain) Present1(SyncInterval, PresentFlags uint32, pPresentP
 	return err
 }
 func (this *DXGISwapChain) IsTemporaryMonoSupported() bool {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.IsTemporaryMonoSupported,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.IsTemporaryMonoSupported, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
@@ -382,10 +330,7 @@ func (this *DXGISwapChain) IsTemporaryMonoSupported() bool {
 func (this *DXGISwapChain) GetRestrictToOutput() (*DXGIOutput, error) {
 	var err error
 	var ppRestrictToOutput *DXGIOutput
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetRestrictToOutput,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetRestrictToOutput, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(&ppRestrictToOutput)),
 		0,
 	)
@@ -394,10 +339,7 @@ func (this *DXGISwapChain) GetRestrictToOutput() (*DXGIOutput, error) {
 }
 func (this *DXGISwapChain) SetBackgroundColor(pColor *DXGI_RGBA) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetBackgroundColor,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetBackgroundColor, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pColor)),
 		0,
 	)
@@ -406,50 +348,44 @@ func (this *DXGISwapChain) SetBackgroundColor(pColor *DXGI_RGBA) error {
 }
 func (this *DXGISwapChain) GetBackgroundColor() (*DXGI_RGBA, error) {
 	var err error
-	var pColor *DXGI_RGBA
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetBackgroundColor,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pColor)),
+	var color DXGI_RGBA
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetBackgroundColor, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&color)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pColor, err
+	if err != nil {
+		return nil, err
+	}
+	return &color, nil
 }
 func (this *DXGISwapChain) SetRotation(Rotation uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetRotation,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetRotation, uintptr(unsafe.Pointer(this)),
 		uintptr(Rotation),
 		0,
 	)
 	err = GetError(uint32(ret))
 	return err
 }
-func (this *DXGISwapChain) GetRotation() (*uint32, error) {
+func (this *DXGISwapChain) GetRotation() (uint32, error) {
 	var err error
-	var pRotation *uint32
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetRotation,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pRotation)),
+	var rotation uint32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetRotation, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&rotation)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pRotation, err
+	if err != nil {
+		return 0, err
+	}
+	return rotation, nil
 }
 
 /*** IDXGISwapChain2 methods ***/
 func (this *DXGISwapChain) SetSourceSize(Width, Height uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetSourceSize,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetSourceSize, uintptr(unsafe.Pointer(this)),
 		uintptr(Width),
 		uintptr(Height),
 	)
@@ -457,59 +393,57 @@ func (this *DXGISwapChain) SetSourceSize(Width, Height uint32) error {
 	return err
 }
 func (this *DXGISwapChain) GetSourceSize() (Width, Height uint32, err error) {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetSourceSize,
-		3,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(Width),
-		uintptr(Height),
+	var pWidth, pHeight uint32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetSourceSize, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&pWidth)),
+		uintptr(unsafe.Pointer(&pHeight)),
+		0,
+		0,
+		0,
 	)
 	err = GetError(uint32(ret))
-	return Width, Height, err
+	if err != nil {
+		return 0, 0, err
+	}
+	return pWidth, pHeight, nil
 }
 func (this *DXGISwapChain) SetMaximumFrameLatency(MaxLatency uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetMaximumFrameLatency,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetMaximumFrameLatency, uintptr(unsafe.Pointer(this)),
 		uintptr(MaxLatency),
 		0,
 	)
 	err = GetError(uint32(ret))
 	return err
 }
-func (this *DXGISwapChain) GetMaximumFrameLatency() (*uint32, error) {
+func (this *DXGISwapChain) GetMaximumFrameLatency() (uint32, error) {
 	var err error
-	var MaxLatency *uint32
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetMaximumFrameLatency,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(MaxLatency)),
+	var maxLatency uint32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetMaximumFrameLatency, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&maxLatency)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return MaxLatency, err
+	if err != nil {
+		return 0, err
+	}
+	return maxLatency, nil
 }
-func (this *DXGISwapChain) GetFrameLatencyWaitableObject() error {
+func (this *DXGISwapChain) GetFrameLatencyWaitableObject() (HANDLE, error) {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetFrameLatencyWaitableObject,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetFrameLatencyWaitableObject, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
 	err = GetError(uint32(ret))
-	return err
+	if err != nil {
+		return 0, err
+	}
+	return HANDLE(ret), nil
 }
 func (this *DXGISwapChain) SetMatrixTransform(pMatrix *DXGI_MATRIX_3X2_F) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetMatrixTransform,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetMatrixTransform, uintptr(unsafe.Pointer(this)),
 		uintptr(unsafe.Pointer(pMatrix)),
 		0,
 	)
@@ -518,48 +452,42 @@ func (this *DXGISwapChain) SetMatrixTransform(pMatrix *DXGI_MATRIX_3X2_F) error 
 }
 func (this *DXGISwapChain) GetMatrixTransform() (*DXGI_MATRIX_3X2_F, error) {
 	var err error
-	var pMatrix *DXGI_MATRIX_3X2_F
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetMatrixTransform,
-		2,
-		uintptr(unsafe.Pointer(this)),
-		uintptr(unsafe.Pointer(pMatrix)),
+	var matrix DXGI_MATRIX_3X2_F
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetMatrixTransform, uintptr(unsafe.Pointer(this)),
+		uintptr(unsafe.Pointer(&matrix)),
 		0,
 	)
 	err = GetError(uint32(ret))
-	return pMatrix, err
+	if err != nil {
+		return nil, err
+	}
+	return &matrix, nil
 }
 
 /*** IDXGISwapChain3 methods ***/
 func (this *DXGISwapChain) GetCurrentBackBufferIndex() uint32 {
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.GetCurrentBackBufferIndex,
-		1,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.GetCurrentBackBufferIndex, uintptr(unsafe.Pointer(this)),
 		0,
 		0,
 	)
 	return uint32(ret)
 }
-func (this *DXGISwapChain) CheckColorSpaceSupport(ColorSpace uint32) (*uint32, error) {
+func (this *DXGISwapChain) CheckColorSpaceSupport(ColorSpace uint32) (uint32, error) {
 	var err error
-	var pColorSpaceSupport *uint32
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.CheckColorSpaceSupport,
-		3,
-		uintptr(unsafe.Pointer(this)),
+	var colorSpaceSupport uint32
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.CheckColorSpaceSupport, uintptr(unsafe.Pointer(this)),
 		uintptr(ColorSpace),
-		uintptr(unsafe.Pointer(pColorSpaceSupport)),
+		uintptr(unsafe.Pointer(&colorSpaceSupport)),
 	)
 	err = GetError(uint32(ret))
-	return pColorSpaceSupport, err
+	if err != nil {
+		return 0, err
+	}
+	return colorSpaceSupport, nil
 }
 func (this *DXGISwapChain) SetColorSpace1(ColorSpace uint32) error {
 	var err error
-	ret, _, _ := syscall.Syscall(
-		this.lpVtbl.SetColorSpace1,
-		2,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetColorSpace1, uintptr(unsafe.Pointer(this)),
 		uintptr(ColorSpace),
 		0,
 	)
@@ -568,10 +496,7 @@ func (this *DXGISwapChain) SetColorSpace1(ColorSpace uint32) error {
 }
 func (this *DXGISwapChain) ResizeBuffers1(BufferCount, Width, Height, Format, SwapChainFlags uint32, pCreationNodeMask *uint32, ppPresentQueue **interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall9(
-		this.lpVtbl.ResizeBuffers1,
-		8,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.ResizeBuffers1, uintptr(unsafe.Pointer(this)),
 		uintptr(BufferCount),
 		uintptr(Width),
 		uintptr(Height),
@@ -588,10 +513,7 @@ func (this *DXGISwapChain) ResizeBuffers1(BufferCount, Width, Height, Format, Sw
 /*** IDXGISwapChain4 methods ***/
 func (this *DXGISwapChain) SetHDRMetaData(Type uint32, Size uint32, pMetaData *interface{}) error {
 	var err error
-	ret, _, _ := syscall.Syscall6(
-		this.lpVtbl.SetHDRMetaData,
-		4,
-		uintptr(unsafe.Pointer(this)),
+	ret, _, _ := syscall.SyscallN(this.lpVtbl.SetHDRMetaData, uintptr(unsafe.Pointer(this)),
 		uintptr(Type),
 		uintptr(Size),
 		uintptr(unsafe.Pointer(pMetaData)),
